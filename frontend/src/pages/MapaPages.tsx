@@ -11,7 +11,7 @@ interface Marker {
 }
 
 export function MapaPages() {
-  const { coords, mapaDiv, nuevoMarcador$, movimientoMarcador$, agregarMarcadorSocket } = useMapBox();
+  const { coords, mapaDiv, nuevoMarcador$, movimientoMarcador$, agregarMarcadorSocket, actualizarPosicion } = useMapBox();
   const { socket } = useSocketContext()
 
   useEffect(() => {
@@ -29,10 +29,16 @@ export function MapaPages() {
   }, [nuevoMarcador$, socket])
 
   useEffect(() => {
-    movimientoMarcador$.subscribe(mvMarcado => {
-      console.log({ mvMarcado })
+    socket.on("marcador-actualizado", (marcador) => {
+      actualizarPosicion(marcador)
     })
-  }, [movimientoMarcador$])
+  }, [socket, actualizarPosicion])
+
+  useEffect(() => {
+    movimientoMarcador$.subscribe(mvMarcado => {
+      socket.emit("marcador-actualizado", mvMarcado)
+    })
+  }, [socket, movimientoMarcador$])
 
   useEffect(() => {
     socket.on("marcador-nuevo", (marcador) => {

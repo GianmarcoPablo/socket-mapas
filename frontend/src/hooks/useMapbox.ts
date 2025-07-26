@@ -3,7 +3,7 @@ import { Subject } from "rxjs";
 import { v4 as uuid } from "uuid";
 import mapboxgl, { MapMouseEvent } from "mapbox-gl";
 
-mapboxgl.accessToken = '';
+mapboxgl.accessToken = 'pk.eyJ1Ijoib3Npb3NhZCIsImEiOiJjbWRoaDloM3MwMW9iMmpwdjJocGttd3cxIn0.Axjyqtgd2l518LYE6sWS3A';
 
 const puntoInicial = {
   lng: 5,
@@ -59,6 +59,10 @@ export const useMapBox = () => {
     crearMarcador(id, lng, lat, true);
   }, [crearMarcador]);
 
+  const actualizarPosicion = useCallback((marcador: Marker) => {
+    marcadores.current[marcador.id].setLngLat([marcador.lng, marcador.lat])
+  }, [])
+
   // Cuando recibimos marcador desde el socket
   const agregarMarcadorSocket = useCallback((marcador: Marker, id: string) => {
     crearMarcador(id, marcador.lng, marcador.lat, false);
@@ -95,13 +99,13 @@ export const useMapBox = () => {
     mapa.current?.on("click", agregarMarcadorClick);
   }, [agregarMarcadorClick]);
 
-
   return {
     coords,
     mapaDiv,
     nuevoMarcador$: nuevoMarcador.current,
     movimientoMarcador$: movimientoMarcador.current,
     agregarMarcadorSocket,
-    marcadores
+    marcadores,
+    actualizarPosicion
   };
 };

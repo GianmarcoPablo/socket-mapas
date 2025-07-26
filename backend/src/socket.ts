@@ -19,6 +19,10 @@ export class Sockets {
         this.marcadoresList.agregarMarcador(marcador)
         socket.broadcast.emit("marcador-nuevo", marcador)
       })
+      socket.on("marcador-actualizado", (marcador) => {
+        this.marcadoresList.actualizarMarcador(marcador)
+         socket.broadcast.emit("marcador-actualizado", marcador)
+      })
     });
   }
 
